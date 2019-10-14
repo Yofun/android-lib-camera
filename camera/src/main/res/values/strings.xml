@@ -1,0 +1,7 @@
+<resources>
+    <style name="ThemeCamera" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <dimen name="status_bar_height">24dp</dimen>
+</resources>
