@@ -6,8 +6,8 @@ import android.support.v4.app.Fragment;
 import java.util.List;
 
 public class CameraCaptureActivity extends BaseActivity implements CameraCaptureInterface {
-    private static final String MODE = "MODE";
-    private static final String DURATION = "DURATION";
+    public static final String MODE = "MODE";
+    public static final String DURATION = "DURATION";
 
 
     private CameraOrientationListener cameraOrientationListener;

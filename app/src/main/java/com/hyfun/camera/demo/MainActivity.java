@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.hyfun.camera.CameraCaptureActivity;
+import com.hyfun.camera.FunCamera;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,6 +17,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void capture(View view) {
-        startActivity(new Intent(this, CameraCaptureActivity.class));
+        FunCamera.capturePhoto(this, 10);
     }
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CaptureButton">
+        <!--外圆颜色-->
+        <attr name="outCircleColor" format="color"/>
+        <!--内圆颜色-->
+        <attr name="innerCircleColor" format="color"/>
+        <!--进度条颜色-->
+        <attr name="progressColor" format="color"/>
+        <!--录制时间-->
+        <attr name="maxSeconds" format="integer"/>
+    </declare-styleable>
+</resources>
