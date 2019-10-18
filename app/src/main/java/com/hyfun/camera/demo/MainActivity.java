@@ -19,4 +19,12 @@ public class MainActivity extends AppCompatActivity {
     public void capture(View view) {
         FunCamera.capturePhoto(this, 10);
     }
+
+    public void record(View view) {
+        FunCamera.captureRecord(this, 20, 15000);
+    }
+
+    public void captureRecord(View view) {
+
+    }
 }

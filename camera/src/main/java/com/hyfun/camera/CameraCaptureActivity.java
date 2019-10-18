@@ -21,7 +21,7 @@ public class CameraCaptureActivity extends BaseActivity implements CameraCapture
          * 传过来的配置
          */
         int mode = getIntent().getIntExtra(MODE, 0);
-        int duration = getIntent().getIntExtra(MODE, 0);
+        long duration = getIntent().getLongExtra(DURATION, 0);
         if (mode == 0 || duration == 0) {
             throw new RuntimeException("mode or duration can`t be zero!");
         }

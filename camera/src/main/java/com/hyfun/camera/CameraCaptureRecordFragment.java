@@ -37,26 +37,29 @@ public class CameraCaptureRecordFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.camera_fragment_capture_record, container, false);
         captureButton = view.findViewById(R.id.camera_capture_record_capture_button);
+        captureButton.setMode(mode);
+        captureButton.setDuration(duration);
         captureButton.setOnProgressTouchListener(new CaptureButton.OnProgressTouchListener() {
             @Override
-            public void onClick(CaptureButton photoButton) {
-                Util.log("点击了");
+            public void onCapture() {
+                Util.log("拍照片");
             }
 
             @Override
-            public void onLongClick(CaptureButton photoButton) {
-                Util.log("长按按下");
+            public void onCaptureRecordStart() {
+                Util.log("录制开始");
             }
 
             @Override
-            public void onLongClickUp(CaptureButton photoButton) {
-                Util.log("长按抬起");
-            }
-
-            @Override
-            public void onFinish() {
+            public void onCaptureRecordEnd() {
                 Util.log("录制结束了");
             }
+
+            @Override
+            public void onCaptureError(String message) {
+                Util.log("拍摄出错>>>>>" + message);
+            }
+
         });
 
         return view;

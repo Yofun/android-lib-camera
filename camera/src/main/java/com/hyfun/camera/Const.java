@@ -6,7 +6,4 @@ package com.hyfun.camera;
  * Description:
  */
 interface Const {
-    int MODE_拍照 = 1;
-    int MODE_录像 = 2;
-    int MODE_拍照录像 = 3;
 }
