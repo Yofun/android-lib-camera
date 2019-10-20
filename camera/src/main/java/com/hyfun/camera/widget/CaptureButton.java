@@ -10,6 +10,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.AttributeSet;
@@ -25,6 +27,11 @@ import com.hyfun.camera.R;
  */
 
 public class CaptureButton extends View {
+    private static final int RING_WHAT = 101;
+    private static final int MSG_RECORD_START = 102;
+    private static final int MSG_RECORD_END = 103;
+
+
     private float circleWidth;//外圆环宽度
     private int outCircleColor;//外圆颜色
     private int innerCircleColor;//内圆颜色
@@ -40,26 +47,12 @@ public class CaptureButton extends View {
     private GestureDetectorCompat mDetector;//手势识别
     private boolean isLongClick = false;//是否长按
     private float startAngle = -90;//开始角度
-    private float mmSweepAngleStart = 0f;//起点
-    private float mmSweepAngleEnd = 360f;//终点
-    private float mSweepAngle;//扫过的角度
-    private long mLoadingTime;
+    private float progress;// 进度
 
 
-    private long lastActionDownTime = 0;
-    private long lastActionUpTime = 0;
+    private long lastActionDownTime = 0; // 记录点击录制视频时的时间
+    private long lastActionUpTime = 0;  // 记录最后一次手指抬起的时间
 
-
-    public void setDuration(long duration) {
-        mLoadingTime = duration;
-    }
-
-    // 拍摄模式
-    private int mode;
-
-    public void setMode(int mode) {
-        this.mode = mode;
-    }
 
     public CaptureButton(Context context) {
         this(context, null);
@@ -153,63 +146,60 @@ public class CaptureButton extends View {
             mCPaint.setStyle(Paint.Style.STROKE);
             mCPaint.setStrokeWidth(circleWidth / 2);
             RectF rectF = new RectF(0 + circleWidth, 0 + circleWidth, width - circleWidth, height - circleWidth);
-            canvas.drawArc(rectF, startAngle, mSweepAngle, false, mCPaint);
+            canvas.drawArc(rectF, startAngle, 360 * (1.0f * progress / mLoadingTime), false, mCPaint);
         } else {
             canvas.drawCircle(width / 2, height / 2, innerRaduis, innerRoundPaint);
         }
 
     }
 
-    private void start() {
-        ValueAnimator animator = ValueAnimator.ofFloat(mmSweepAngleStart, mmSweepAngleEnd);
-        animator.setInterpolator(new LinearInterpolator());
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                mSweepAngle = (float) valueAnimator.getAnimatedValue();
-                //获取到需要绘制的角度，重新绘制
-                invalidate();
-            }
-        });
-        //这里是时间获取和赋值
-        ValueAnimator animator1 = ValueAnimator.ofInt((int) mLoadingTime, 0);
-        animator1.setInterpolator(new LinearInterpolator());
-        animator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                int time = (int) valueAnimator.getAnimatedValue();
-            }
-        });
-        AnimatorSet set = new AnimatorSet();
-        set.playTogether(animator, animator1);
-        set.setDuration(mLoadingTime);
-        set.setInterpolator(new LinearInterpolator());
-        set.start();
-        set.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                clearAnimation();
-                isLongClick = false;
-                postInvalidate();
-                if (listener != null) {
-                    listener.onCaptureRecordEnd();
-                }
-            }
-        });
-
-    }
+//    private void start() {
+//        ValueAnimator animator = ValueAnimator.ofFloat(mmSweepAngleStart, mmSweepAngleEnd);
+//        animator.setInterpolator(new LinearInterpolator());
+//        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+//                mSweepAngle = (float) valueAnimator.getAnimatedValue();
+//                //获取到需要绘制的角度，重新绘制
+//                invalidate();
+//            }
+//        });
+//        //这里是时间获取和赋值
+//        ValueAnimator animator1 = ValueAnimator.ofInt((int) mLoadingTime, 0);
+//        animator1.setInterpolator(new LinearInterpolator());
+//        animator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+//                int time = (int) valueAnimator.getAnimatedValue();
+//            }
+//        });
+//        AnimatorSet set = new AnimatorSet();
+//        set.playTogether(animator, animator1);
+//        set.setDuration(mLoadingTime);
+//        set.setInterpolator(new LinearInterpolator());
+//        set.start();
+//        set.addListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                super.onAnimationEnd(animation);
+//                clearAnimation();
+//                isLongClick = false;
+//                postInvalidate();
+//                if (listener != null) {
+//                    listener.onCaptureRecordEnd();
+//                }
+//            }
+//        });
+//
+//    }
 
     private Runnable longPressRunnable = new Runnable() {
         @Override
         public void run() {
-            lastActionDownTime = System.currentTimeMillis();
-            isLongClick = true;
-            postInvalidate();
-            start();
             if (listener != null) {
                 listener.onCaptureRecordStart();
             }
+            handler.sendEmptyMessage(MSG_RECORD_START);
         }
     };
 
@@ -260,8 +250,6 @@ public class CaptureButton extends View {
                 if (isLongClick && mode != Mode.MODE_CAPTURE) {
                     if (Math.abs(now - lastActionDownTime) > 1000) {
                         if (listener != null) {
-                            isLongClick = false;
-                            postInvalidate();
                             listener.onCaptureRecordEnd();
                         }
                     } else {
@@ -272,7 +260,7 @@ public class CaptureButton extends View {
                             listener.onCaptureError("录制时间太短");
                         }
                     }
-                    clearAnimation();
+                    handler.sendEmptyMessage(MSG_RECORD_END);
                 }
                 lastActionUpTime = now;
                 break;
@@ -280,11 +268,67 @@ public class CaptureButton extends View {
         return true;
     }
 
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == RING_WHAT) {
+                if (!isLongClick){
+                    return;
+                }
+                if (progress < mLoadingTime) {
+                    progress = System.currentTimeMillis() - lastActionDownTime;
+                    postInvalidate();
+                    handler.sendEmptyMessageDelayed(RING_WHAT, 100);
+                } else {
+                    // 时间到了
+                    if (listener != null) {
+                        listener.onCaptureRecordEnd();
+                    }
+                    handler.sendEmptyMessage(MSG_RECORD_END);
+                }
+            } else if (msg.what == MSG_RECORD_START) {
+                lastActionDownTime = System.currentTimeMillis();
+                isLongClick = true;
+                handler.sendEmptyMessage(RING_WHAT);
+            } else if (msg.what == MSG_RECORD_END) {
+                isLongClick = false;
+                progress = 0;
+                postInvalidate();
+            }
+        }
+    };
+    // ——————————————————————————————私有方法——————————————————————————————
+
+    // ——————————————————————————————SET方法——————————————————————————————
+    /**
+     * 拍摄时长
+     */
+    private long mLoadingTime;
+
+    public void setDuration(long duration) {
+        mLoadingTime = duration;
+    }
+
+    /**
+     * 拍摄模式
+     */
+    private int mode;
+
+    public void setMode(int mode) {
+        this.mode = mode;
+    }
+
+    /**
+     * 操作监听
+     */
     private OnProgressTouchListener listener;
 
     public void setOnProgressTouchListener(OnProgressTouchListener listener) {
         this.listener = listener;
     }
+
 
     /**
      * 进度触摸监听

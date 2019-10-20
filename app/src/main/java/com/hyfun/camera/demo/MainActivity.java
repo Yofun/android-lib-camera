@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void record(View view) {
-        FunCamera.captureRecord(this, 20, 15000);
+        FunCamera.captureRecord(this, 20, 10000);
     }
 
     public void captureRecord(View view) {
