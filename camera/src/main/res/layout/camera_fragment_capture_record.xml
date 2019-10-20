@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <SurfaceView
+        android:id="@+id/camera_capture_record_surface_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -59,6 +60,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
             <ImageView
+                android:id="@+id/camera_capture_record_btn_back"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"

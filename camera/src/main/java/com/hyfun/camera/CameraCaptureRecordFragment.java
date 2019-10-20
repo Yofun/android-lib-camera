@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,7 +24,9 @@ public class CameraCaptureRecordFragment extends BaseFragment {
     private long duration; // 拍摄时长
 
 
-    //
+    //视图
+    private SurfaceView surfaceView;
+    private View viewBack;
     private CaptureButton captureButton;
 
 
@@ -36,7 +39,17 @@ public class CameraCaptureRecordFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.camera_fragment_capture_record, container, false);
+        surfaceView = view.findViewById(R.id.camera_capture_record_surface_view);
+        viewBack = view.findViewById(R.id.camera_capture_record_btn_back);
         captureButton = view.findViewById(R.id.camera_capture_record_capture_button);
+
+        // 初始化
+        viewBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         captureButton.setMode(mode);
         captureButton.setDuration(duration);
         captureButton.setOnProgressTouchListener(new CaptureButton.OnProgressTouchListener() {
