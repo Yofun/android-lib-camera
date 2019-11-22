@@ -1,4 +1,4 @@
-package com.hyfun.camera;
+package com.hyfun.camera.p2v;
 
 import android.support.v4.app.Fragment;
 

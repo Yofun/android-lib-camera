@@ -1,4 +1,4 @@
-package com.hyfun.camera;
+package com.hyfun.camera.p2v;
 
 import android.content.Context;
 import android.hardware.SensorManager;

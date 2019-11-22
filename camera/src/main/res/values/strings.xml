@@ -1,7 +1,19 @@
 <resources>
-    <style name="ThemeCamera" parent="@style/Theme.AppCompat.Light.NoActionBar">
+
+    <style name="FunCameraTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowFullscreen">true</item>
+
+        <item name="android:windowAnimationStyle">@style/FunCameraAnimationStyle</item>
     </style>
 
     <dimen name="status_bar_height">24dp</dimen>
+
+
+    <!-- 默认Activity跳转动画 -->
+    <style name="FunCameraAnimationStyle" mce_bogus="1" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/activity_up_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/activity_up_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/activity_down_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_down_out</item>
+    </style>
 </resources>

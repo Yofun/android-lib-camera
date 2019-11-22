@@ -1,4 +1,4 @@
-package com.hyfun.camera;
+package com.hyfun.camera.p2v;
 
 /**
  * Created by HyFun on 2019/10/14.

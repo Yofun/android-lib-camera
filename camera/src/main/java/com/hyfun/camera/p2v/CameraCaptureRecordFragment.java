@@ -1,4 +1,4 @@
-package com.hyfun.camera;
+package com.hyfun.camera.p2v;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.hyfun.camera.R;
 import com.hyfun.camera.widget.CaptureButton;
 
 /**
@@ -44,6 +45,8 @@ public class CameraCaptureRecordFragment extends BaseFragment {
         captureButton = view.findViewById(R.id.camera_capture_record_capture_button);
 
         // 初始化
+        Capture capture = new Capture(surfaceView);
+
         viewBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +77,10 @@ public class CameraCaptureRecordFragment extends BaseFragment {
             }
 
         });
+
+
+
+
 
         return view;
     }

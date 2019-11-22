@@ -11,9 +11,9 @@
 
     <application>
         <activity
-            android:name=".CameraCaptureActivity"
+            android:name=".p2v.CameraCaptureActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/ThemeCamera" />
+            android:theme="@style/FunCameraTheme" />
     </application>
 
 </manifest>

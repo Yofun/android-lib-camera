@@ -1,11 +1,14 @@
-package com.hyfun.camera;
+package com.hyfun.camera.p2v;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+
+import com.hyfun.camera.R;
 
 import java.util.List;
 
-public class CameraCaptureActivity extends BaseActivity implements CameraCaptureInterface {
+public class CameraCaptureActivity extends AppCompatActivity implements CameraCaptureInterface {
     public static final String MODE = "MODE";
     public static final String DURATION = "DURATION";
 
