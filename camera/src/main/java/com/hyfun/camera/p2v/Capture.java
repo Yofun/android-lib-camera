@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.view.SurfaceHolder;
 
-import com.hyfun.camera.listener.OnCameraCaptureListener;
 import com.hyfun.camera.widget.FunSurfaceView;
 
 import java.io.File;

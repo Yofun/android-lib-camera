@@ -15,7 +15,10 @@ import com.hyfun.camera.widget.CaptureButton;
  */
 public class FunCamera {
 
+    // 压缩后的文件路径
     public static final String DATA = "DATA";
+    // 原文件路径
+    public static final String DATA_ORIGIN = "DATA_ORIGIN";
 
     /**
      * 拍照

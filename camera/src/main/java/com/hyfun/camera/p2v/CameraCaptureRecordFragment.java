@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.hyfun.camera.R;
-import com.hyfun.camera.listener.OnCameraCaptureListener;
 import com.hyfun.camera.widget.CaptureButton;
 import com.hyfun.camera.widget.FunSurfaceView;
 

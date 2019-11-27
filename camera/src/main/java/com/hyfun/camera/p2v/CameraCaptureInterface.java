@@ -7,6 +7,6 @@ package com.hyfun.camera.p2v;
  */
 interface CameraCaptureInterface {
 
-    void returnPath(String path);
+    void returnPath(int type, String path);
 
 }
