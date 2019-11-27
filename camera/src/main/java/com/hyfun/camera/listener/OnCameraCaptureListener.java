@@ -6,5 +6,13 @@ package com.hyfun.camera.listener;
  * Description:
  */
 public interface OnCameraCaptureListener {
+    public void onCameraSwitch(int mode);
+
+    public void onToggleSplash(String flashMode);
+
+    void onCapturePhoto(String photoPath);
+
+    void onCaptureRecord(String filePath);
+
     public void onError(Throwable throwable);
 }

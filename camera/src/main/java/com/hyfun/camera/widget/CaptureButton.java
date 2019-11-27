@@ -44,6 +44,8 @@ public class CaptureButton extends View {
     private float startAngle = -90;//开始角度
     private float progress;// 进度
 
+    private boolean isRecording = false;
+
 
     private long lastActionDownTime = 0; // 记录点击录制视频时的时间
     private long lastActionUpTime = 0;  // 记录最后一次手指抬起的时间
@@ -69,30 +71,6 @@ public class CaptureButton extends View {
         innerCircleColor = array.getColor(R.styleable.CaptureButton_innerCircleColor, Color.WHITE);
         progressColor = array.getColor(R.styleable.CaptureButton_progressColor, Color.GREEN);
         mLoadingTime = array.getInteger(R.styleable.CaptureButton_maxSeconds, 15000);
-//        mDetector = new GestureDetectorCompat(context, new GestureDetector.SimpleOnGestureListener() {
-//            @Override
-//            public boolean onSingleTapConfirmed(MotionEvent e) {
-//                //单击
-//                isLongClick = false;
-//                if (listener != null) {
-//                    listener.onClick(CaptureButton.this);
-//                }
-//                return super.onSingleTapConfirmed(e);
-//            }
-//
-//            @Override
-//            public void onLongPress(MotionEvent e) {
-//                //长按
-//                isLongClick = true;
-//                postInvalidate();
-//                if (listener != null) {
-//                    listener.onLongClick(CaptureButton.this);
-//                }
-//            }
-//        });
-//        mDetector.setIsLongpressEnabled(true);
-
-
     }
 
     private void resetParams() {
@@ -139,7 +117,7 @@ public class CaptureButton extends View {
             mCPaint.setAntiAlias(true);
             mCPaint.setColor(progressColor);
             mCPaint.setStyle(Paint.Style.STROKE);
-            mCPaint.setStrokeWidth(circleWidth / 2);
+            mCPaint.setStrokeWidth(10);
             RectF rectF = new RectF(0 + circleWidth, 0 + circleWidth, width - circleWidth, height - circleWidth);
             canvas.drawArc(rectF, startAngle, 360 * (1.0f * progress / mLoadingTime), false, mCPaint);
         } else {
@@ -148,77 +126,15 @@ public class CaptureButton extends View {
 
     }
 
-//    private void start() {
-//        ValueAnimator animator = ValueAnimator.ofFloat(mmSweepAngleStart, mmSweepAngleEnd);
-//        animator.setInterpolator(new LinearInterpolator());
-//        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            @Override
-//            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-//                mSweepAngle = (float) valueAnimator.getAnimatedValue();
-//                //获取到需要绘制的角度，重新绘制
-//                invalidate();
-//            }
-//        });
-//        //这里是时间获取和赋值
-//        ValueAnimator animator1 = ValueAnimator.ofInt((int) mLoadingTime, 0);
-//        animator1.setInterpolator(new LinearInterpolator());
-//        animator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            @Override
-//            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-//                int time = (int) valueAnimator.getAnimatedValue();
-//            }
-//        });
-//        AnimatorSet set = new AnimatorSet();
-//        set.playTogether(animator, animator1);
-//        set.setDuration(mLoadingTime);
-//        set.setInterpolator(new LinearInterpolator());
-//        set.start();
-//        set.addListener(new AnimatorListenerAdapter() {
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                super.onAnimationEnd(animation);
-//                clearAnimation();
-//                isLongClick = false;
-//                postInvalidate();
-//                if (listener != null) {
-//                    listener.onCaptureRecordEnd();
-//                }
-//            }
-//        });
-//
-//    }
-
     private Runnable longPressRunnable = new Runnable() {
         @Override
         public void run() {
-            if (listener != null) {
-                listener.onCaptureRecordStart();
-            }
             handler.sendEmptyMessage(MSG_RECORD_START);
         }
     };
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-//        mDetector.onTouchEvent(event);
-//        switch (MotionEventCompat.getActionMasked(event)) {
-//            case MotionEvent.ACTION_DOWN:
-//                isLongClick = false;
-//                break;
-//            case MotionEvent.ACTION_UP:
-//            case MotionEvent.ACTION_CANCEL:
-//                if (isLongClick) {
-//                    isLongClick = false;
-//                    postInvalidate();
-//                    if (this.listener != null) {
-//                        this.listener.onLongClickUp(this);
-//                    }
-//                }
-//                break;
-//        }
-//        return true;
-
-
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (mode != Mode.MODE_CAPTURE) {
@@ -230,7 +146,7 @@ public class CaptureButton extends View {
                 removeCallbacks(longPressRunnable);
                 long now = System.currentTimeMillis();
                 // 先判断是否是点击
-                if (!isLongClick && mode != Mode.MODE_RECORD) {
+                if (!isLongClick && !isRecording && mode != Mode.MODE_RECORD) {
                     if (Math.abs(now - lastActionUpTime) > 1000) {
                         if (listener != null) {
                             listener.onCapture();
@@ -249,14 +165,13 @@ public class CaptureButton extends View {
                         }
                     } else {
                         // 录制时间太短
-                        isLongClick = false;
-                        postInvalidate();
                         if (listener != null) {
                             listener.onCaptureError("录制时间太短");
                         }
                     }
                     handler.sendEmptyMessage(MSG_RECORD_END);
                 }
+                isRecording = false;
                 lastActionUpTime = now;
                 break;
         }
@@ -269,7 +184,7 @@ public class CaptureButton extends View {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == RING_WHAT) {
-                if (!isLongClick){
+                if (!isLongClick) {
                     return;
                 }
                 if (progress < mLoadingTime) {
@@ -284,9 +199,20 @@ public class CaptureButton extends View {
                     handler.sendEmptyMessage(MSG_RECORD_END);
                 }
             } else if (msg.what == MSG_RECORD_START) {
+                // 开始录制
                 lastActionDownTime = System.currentTimeMillis();
-                isLongClick = true;
-                handler.sendEmptyMessage(RING_WHAT);
+                isRecording = true;
+                if (Math.abs(lastActionUpTime - lastActionDownTime) <= 1000) {
+                    if (listener != null) {
+                        listener.onCaptureError("您的操作太快了");
+                    }
+                } else {
+                    isLongClick = true;
+                    if (listener != null) {
+                        listener.onCaptureRecordStart();
+                    }
+                    handler.sendEmptyMessage(RING_WHAT);
+                }
             } else if (msg.what == MSG_RECORD_END) {
                 isLongClick = false;
                 progress = 0;

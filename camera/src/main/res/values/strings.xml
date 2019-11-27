@@ -1,8 +1,6 @@
 <resources>
 
     <style name="FunCameraTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowFullscreen">true</item>
-
         <item name="android:windowAnimationStyle">@style/FunCameraAnimationStyle</item>
     </style>
 

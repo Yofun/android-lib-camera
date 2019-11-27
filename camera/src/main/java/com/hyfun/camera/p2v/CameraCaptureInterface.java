@@ -9,5 +9,4 @@ interface CameraCaptureInterface {
 
     void returnPath(String path);
 
-    int getOrientation();
 }

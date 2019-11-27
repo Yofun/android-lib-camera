@@ -7,13 +7,15 @@
         android:required="true" />
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application>
         <activity
             android:name=".p2v.CameraCaptureActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/FunCameraTheme" />
+            android:theme="@style/FunCameraTheme"/>
     </application>
 
 </manifest>

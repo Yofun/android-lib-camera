@@ -15,6 +15,8 @@ import com.hyfun.camera.widget.CaptureButton;
  */
 public class FunCamera {
 
+    public static final String DATA = "DATA";
+
     /**
      * 拍照
      *
@@ -22,7 +24,8 @@ public class FunCamera {
      * @param requestCode
      */
     public static final void capturePhoto(Activity activity, int requestCode) {
-        capturePhoto2Record(activity, requestCode, CaptureButton.Mode.MODE_CAPTURE, 15000);
+        Intent intent = capturePhoto2Record(activity, requestCode, CaptureButton.Mode.MODE_CAPTURE, 15000);
+        activity.startActivityForResult(intent,requestCode);
     }
 
     /**
@@ -33,7 +36,8 @@ public class FunCamera {
      * @param duration
      */
     public static final void captureRecord(Activity activity, int requestCode, long duration) {
-        capturePhoto2Record(activity, requestCode, CaptureButton.Mode.MODE_RECORD, duration);
+        Intent intent = capturePhoto2Record(activity, requestCode, CaptureButton.Mode.MODE_RECORD, duration);
+        activity.startActivityForResult(intent,requestCode);
     }
 
     /**
@@ -44,19 +48,22 @@ public class FunCamera {
      * @param duration
      */
     public static final void capturePhoto2Record(Activity activity, int requestCode, long duration) {
-        capturePhoto2Record(activity, requestCode, CaptureButton.Mode.MODE_CAPTURE_RECORD, duration);
+        Intent intent = capturePhoto2Record(activity, requestCode, CaptureButton.Mode.MODE_CAPTURE_RECORD, duration);
+        activity.startActivityForResult(intent,requestCode);
     }
 
+
+
+    // —————————————————————————————————————————————————————————————————————————————————————————————
     /**
      * @param activity
      * @param mode     模式
      * @param duration 拍摄时长 单位毫秒
      */
-    private static final void capturePhoto2Record(Activity activity, int requestCode, int mode, long duration) {
+    private static final Intent capturePhoto2Record(Activity activity, int requestCode, int mode, long duration) {
         Intent intent = new Intent(activity, CameraCaptureActivity.class);
         intent.putExtra(CameraCaptureActivity.MODE, mode);
         intent.putExtra(CameraCaptureActivity.DURATION, duration);
-        ActivityOptionsCompat compat = ActivityOptionsCompat.makeCustomAnimation(activity, R.anim.activity_up_in, R.anim.activity_up_out);
-        ActivityCompat.startActivityForResult(activity, intent, requestCode, compat.toBundle());
+        return intent;
     }
 }

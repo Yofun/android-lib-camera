@@ -4,6 +4,7 @@ import android.content.Context;
 import android.hardware.Camera;
 import android.view.WindowManager;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -25,6 +26,9 @@ public class PreviewInfo {
 
     private int videoRate; // 视频帧率
 
+    private int screenWidth;
+    private int screenHeight;
+
 
     private Context context;
     private Camera camera;
@@ -32,6 +36,10 @@ public class PreviewInfo {
     public PreviewInfo(Context context, Camera camera) {
         this.context = context;
         this.camera = camera;
+
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        screenWidth = wm.getDefaultDisplay().getWidth();
+        screenHeight = wm.getDefaultDisplay().getHeight();
     }
 
 
@@ -70,10 +78,9 @@ public class PreviewInfo {
             }
         }
 
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        int width = wm.getDefaultDisplay().getWidth();
-        int height = wm.getDefaultDisplay().getHeight();
+
         // 设置预览时的宽高
+        // 取一个最相近屏幕尺寸的预览宽高
         {
             List<Camera.Size> resolutionList = getSupportedPreviewSizes(camera);
             if (resolutionList != null && resolutionList.size() > 0) {
@@ -84,6 +91,25 @@ public class PreviewInfo {
                 for (int i = 0; i < resolutionList.size(); i++) {
                     Camera.Size size = resolutionList.get(i);
                     Util.log("width:" + size.width + "   height:" + size.height);
+                }
+
+                // 找一个比例相近的进行比较
+                if (!hasSize) {
+                    List<Double> distanceList = new ArrayList<>();
+                    for (int i = 0; i < resolutionList.size(); i++) {
+                        Camera.Size size = resolutionList.get(i);
+                        Util.log("width:" + size.width + "   height:" + size.height);
+                        double scale = 1.0f * size.height / size.width;
+                        double scaleScreen = 1.0 * screenWidth / screenHeight;
+                        distanceList.add(Math.abs(scale - scaleScreen));
+                    }
+                    // 找到最小值
+                    int position = distanceList.indexOf(Collections.min(distanceList));
+                    // 找到了
+                    previewSize = resolutionList.get(position);
+                    previewWidth = previewSize.width;
+                    previewHeight = previewSize.height;
+                    hasSize = true;
                 }
 
                 if (!hasSize)
@@ -101,7 +127,7 @@ public class PreviewInfo {
                 if (!hasSize)
                     for (int i = 0; i < resolutionList.size(); i++) {
                         Camera.Size size = resolutionList.get(i);
-                        if (size != null && size.width == height && size.height == width) {
+                        if (size != null && size.width == screenHeight && size.height == screenWidth) {
                             previewSize = size;
                             previewWidth = previewSize.width;
                             previewHeight = previewSize.height;
@@ -113,7 +139,7 @@ public class PreviewInfo {
                 if (!hasSize)
                     for (int i = 0; i < resolutionList.size(); i++) {
                         Camera.Size size = resolutionList.get(i);
-                        if (size != null && size.height == width) {
+                        if (size != null && size.height == screenWidth) {
                             previewSize = size;
                             previewWidth = previewSize.width;
                             previewHeight = previewSize.height;
@@ -175,7 +201,7 @@ public class PreviewInfo {
                 if (!hasSize)
                     for (int i = 0; i < pictureSizeList.size(); i++) {
                         Camera.Size size = pictureSizeList.get(i);
-                        if (size != null && size.width == height && size.height == width) {
+                        if (size != null && size.width == screenHeight && size.height == screenWidth) {
                             pictureSize = size;
                             pictureWidth = pictureSize.width;
                             pictureHeight = pictureSize.height;
@@ -187,7 +213,7 @@ public class PreviewInfo {
                 if (!hasSize)
                     for (int i = 0; i < pictureSizeList.size(); i++) {
                         Camera.Size size = pictureSizeList.get(i);
-                        if (size != null && size.height == width) {
+                        if (size != null && size.height == screenWidth) {
                             pictureSize = size;
                             pictureWidth = pictureSize.width;
                             pictureHeight = pictureSize.height;
@@ -247,7 +273,7 @@ public class PreviewInfo {
                 if (!hasSize)
                     for (int i = 0; i < videoSizeList.size(); i++) {
                         Camera.Size size = videoSizeList.get(i);
-                        if (size != null && size.width == height && size.height == width) {
+                        if (size != null && size.width == screenHeight && size.height == screenWidth) {
                             videoSize = size;
                             videoWidth = videoSize.width;
                             videoHeight = videoSize.height;
@@ -259,7 +285,7 @@ public class PreviewInfo {
                 if (!hasSize)
                     for (int i = 0; i < videoSizeList.size(); i++) {
                         Camera.Size size = videoSizeList.get(i);
-                        if (size != null && size.height == width) {
+                        if (size != null && size.height == screenWidth) {
                             videoSize = size;
                             videoWidth = videoSize.width;
                             videoHeight = videoSize.height;
@@ -293,7 +319,7 @@ public class PreviewInfo {
             }
         }
 
-        Util.log("preview wh:" + previewWidth + "," + previewHeight + "    picture wh:" + pictureWidth + "," + pictureHeight + "    video wh:" + videoWidth + "," + videoHeight + "    videoRate:" + videoRate);
+        Util.log("screen wh:" + screenWidth + "," + screenHeight + "     preview wh:" + previewWidth + "," + previewHeight + "    picture wh:" + pictureWidth + "," + pictureHeight + "    video wh:" + videoWidth + "," + videoHeight + "    videoRate:" + videoRate);
         Util.log("===============================================");
     }
 
@@ -360,9 +386,9 @@ public class PreviewInfo {
             @Override
             public int compare(Camera.Size lhs, Camera.Size rhs) {
                 if (lhs.height != rhs.height) {
-                    return lhs.height - rhs.height;
+                    return rhs.height - lhs.height;
                 } else {
-                    return lhs.width - rhs.width;
+                    return rhs.width - lhs.width;
                 }
             }
         });

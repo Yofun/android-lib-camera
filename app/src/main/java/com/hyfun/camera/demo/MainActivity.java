@@ -1,10 +1,17 @@
 package com.hyfun.camera.demo;
 
+import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Toast;
 
 import com.hyfun.camera.FunCamera;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+
+import io.reactivex.functions.Consumer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,14 +22,71 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void capture(View view) {
-        FunCamera.capturePhoto(this, 10);
+        new RxPermissions(this)
+                .request(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (aBoolean) {
+                            FunCamera.capturePhoto(MainActivity.this, 10);
+                        } else {
+                            Toast.makeText(MainActivity.this, "授权失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     public void record(View view) {
-        FunCamera.captureRecord(this, 20, 10000);
+        new RxPermissions(this)
+                .request(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.RECORD_AUDIO
+                )
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (aBoolean) {
+                            FunCamera.captureRecord(MainActivity.this, 20, 10000);
+                        } else {
+                            Toast.makeText(MainActivity.this, "授权失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     public void captureRecord(View view) {
-        FunCamera.capturePhoto2Record(this, 30, 15000);
+        new RxPermissions(this)
+                .request(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.RECORD_AUDIO
+                )
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (aBoolean) {
+                            FunCamera.capturePhoto2Record(MainActivity.this, 30, 10000);
+                        } else {
+                            Toast.makeText(MainActivity.this, "授权失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 10 && resultCode == RESULT_OK) {
+            String path = data.getStringExtra(FunCamera.DATA);
+            Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
+        } else if (requestCode == 20 && resultCode == RESULT_OK) {
+            String path = data.getStringExtra(FunCamera.DATA);
+            Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
+        } else if (requestCode == 30 && resultCode == RESULT_OK) {
+            String path = data.getStringExtra(FunCamera.DATA);
+            Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
+        }
     }
 }
