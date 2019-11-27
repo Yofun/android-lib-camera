@@ -107,7 +107,7 @@ class Capture {
      * @param x
      * @param y
      */
-    public void focus(float x, float y) {
+    public void focus(final float x, final float y) {
         if (!isPreviewing) {
             return;
         }
@@ -139,7 +139,10 @@ class Capture {
                 params.setFocusMode(currentFocusMode);
                 camera.setParameters(params);
                 if (success) {
-                    Util.log("对焦区域对焦成功");
+                    Util.log("focus success");
+                    if (onCameraCaptureListener != null) {
+                        onCameraCaptureListener.onFocusSuccess(x, y);
+                    }
                 }
             }
         });

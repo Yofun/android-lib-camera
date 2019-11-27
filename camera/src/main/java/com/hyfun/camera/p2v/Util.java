@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -133,4 +135,47 @@ class Util {
         }
         return profile;
     }
+
+
+    /**
+     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+     */
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+
+    /**
+     * focus view的缩放动画
+     */
+    public static void scale(final View view) {
+        view.clearAnimation();
+        view.setVisibility(View.VISIBLE);
+
+        ScaleAnimation animation = new ScaleAnimation(2.0f, 1.0f, 2.0f, 1, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        animation.setDuration(400);
+
+        view.startAnimation(animation);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                view.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+
+    }
+
+
 }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -35,7 +36,7 @@ public class CameraCaptureRecordFragment extends BaseFragment implements OnCamer
     private FunSurfaceView surfaceView;
     private View viewBack;
     private CaptureButton captureButton;
-    private ImageView viewSplashMode, viewSwitch;
+    private ImageView viewSplashMode, viewSwitch, viewFocusView;
 
 
     public CameraCaptureRecordFragment(int mode, long duration) {
@@ -60,6 +61,7 @@ public class CameraCaptureRecordFragment extends BaseFragment implements OnCamer
         captureButton = view.findViewById(R.id.camera_capture_record_capture_button);
         viewSplashMode = view.findViewById(R.id.camera_capture_record_iv_splash);
         viewSwitch = view.findViewById(R.id.camera_capture_record_iv_switch);
+        viewFocusView = view.findViewById(R.id.camera_capture_record_focus_view);
 
         // 初始化
         final Capture capture = new Capture(surfaceView);
@@ -168,6 +170,15 @@ public class CameraCaptureRecordFragment extends BaseFragment implements OnCamer
         if (flashMode.equals(Camera.Parameters.FLASH_MODE_TORCH)) {
             viewSplashMode.setImageResource(R.drawable.camera_ic_capture_flash_on_24dp);
         }
+    }
+
+    @Override
+    public void onFocusSuccess(float x, float y) {
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) viewFocusView.getLayoutParams();
+        layoutParams.leftMargin = (int) x - Util.dip2px(getContext(), 35);
+        layoutParams.topMargin = (int) y - Util.dip2px(getContext(), 35);
+        viewFocusView.setLayoutParams(layoutParams);
+        Util.scale(viewFocusView);
     }
 
     @Override
