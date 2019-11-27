@@ -3,6 +3,7 @@ package com.hyfun.camera.p2v;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.hardware.Camera;
 import android.media.MediaRecorder;
 import android.os.Build;
@@ -14,6 +15,7 @@ import com.hyfun.camera.widget.FunSurfaceView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -97,6 +99,56 @@ class Capture {
             onCameraCaptureListener.onCameraSwitch(cameraId);
         }
     }
+
+    /**
+     * @param x
+     * @param y
+     */
+    public void focus(double x, double y) {
+        if (!isPreviewing) {
+            return;
+        }
+
+
+        int focusRadius = (int) (16 * 1000.0f);
+        int left = (int) (x * 2000.0f - 1000.0f) - focusRadius;
+        int top = (int) (y * 2000.0f - 1000.0f) - focusRadius;
+        Rect focusArea = new Rect();
+        focusArea.left = Math.max(left, -1000);
+        focusArea.top = Math.max(top, -1000);
+        focusArea.right = Math.min(left + focusRadius, 1000);
+        focusArea.bottom = Math.min(top + focusRadius, 1000);
+        Camera.Area cameraArea = new Camera.Area(focusArea, 800);
+
+        Camera.Parameters parameters = camera.getParameters();
+
+        List<Camera.Area> areas = new ArrayList<>();
+        List<Camera.Area> areasMetrix = new ArrayList<>();
+        if (parameters.getMaxNumMeteringAreas() > 0) {
+            areas.add(cameraArea);
+            areasMetrix.add(cameraArea);
+        }
+
+        if (areas.isEmpty() || areasMetrix.isEmpty()) {
+            return;
+        }
+        parameters.setMeteringAreas(areasMetrix);
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        parameters.setFocusAreas(areas);
+        try {
+            camera.cancelAutoFocus();
+            camera.setParameters(parameters);
+            camera.autoFocus(new Camera.AutoFocusCallback() {
+                @Override
+                public void onAutoFocus(boolean success, Camera camera) {
+                    Util.log("focus success");
+                }
+            });
+        } catch (Exception e) {
+            Util.e(e);
+        }
+    }
+
 
     /**
      * 切换闪光灯状态

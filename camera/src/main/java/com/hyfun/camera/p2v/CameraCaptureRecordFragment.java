@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -72,6 +73,26 @@ public class CameraCaptureRecordFragment extends BaseFragment implements OnCamer
         });
         captureButton.setMode(mode);
         captureButton.setDuration(duration);
+
+        // ——————————————————————————————————————点击事件——————————————————————————————————————————
+
+        // 切换闪光灯
+        viewSplashMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                capture.enableFlashLight();
+            }
+        });
+
+        // 切换摄像头
+        viewSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                capture.switchCamera();
+            }
+        });
+
+        // 点击拍摄
         captureButton.setOnProgressTouchListener(new CaptureButton.OnProgressTouchListener() {
             @Override
             public void onCapture() {
@@ -96,24 +117,19 @@ public class CameraCaptureRecordFragment extends BaseFragment implements OnCamer
 
         });
 
-        // ——————————————————————————————————————点击事件——————————————————————————————————————————
-
-        // 切换闪光灯
-        viewSplashMode.setOnClickListener(new View.OnClickListener() {
+        // 对焦
+        surfaceView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                capture.enableFlashLight();
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        capture.focus(event.getRawX(), event.getRawY());
+                        break;
+                }
+                return false;
             }
         });
-
-        // 切换摄像头
-        viewSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                capture.switchCamera();
-            }
-        });
-
 
         return view;
     }

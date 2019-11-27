@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hyfun.camera.FunCamera;
@@ -15,10 +16,13 @@ import io.reactivex.functions.Consumer;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TextView textView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        textView = findViewById(R.id.textView);
     }
 
     public void capture(View view) {
@@ -78,15 +82,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 10 && resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             String path = data.getStringExtra(FunCamera.DATA);
-            Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
-        } else if (requestCode == 20 && resultCode == RESULT_OK) {
-            String path = data.getStringExtra(FunCamera.DATA);
-            Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
-        } else if (requestCode == 30 && resultCode == RESULT_OK) {
-            String path = data.getStringExtra(FunCamera.DATA);
-            Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
+            String pathOrigin = data.getStringExtra(FunCamera.DATA_ORIGIN);
+            StringBuilder sb = new StringBuilder();
+            sb.append("压缩后地址：" + path + "\n");
+            sb.append("原图的地址：" + pathOrigin);
+            textView.setText(sb.toString());
         }
     }
 }
