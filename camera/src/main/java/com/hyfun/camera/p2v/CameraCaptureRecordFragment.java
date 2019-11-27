@@ -124,10 +124,13 @@ public class CameraCaptureRecordFragment extends BaseFragment implements OnCamer
                 int action = event.getAction();
                 switch (action) {
                     case MotionEvent.ACTION_DOWN:
-                        capture.focus(event.getRawX(), event.getRawY());
+                        float X = event.getX();
+                        float Y = event.getY();
+                        Util.log("click    X：" + X + "    Y：" + Y);
+                        capture.focus(X, Y);
                         break;
                 }
-                return false;
+                return true;
             }
         });
 

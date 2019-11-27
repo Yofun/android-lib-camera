@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.hardware.Camera;
 import android.media.MediaRecorder;
 import android.os.Build;
@@ -54,6 +55,8 @@ class Capture {
     private PreviewInfo previewInfo;
     // 闪光灯模式
     private String currentFlashMode = Camera.Parameters.FLASH_MODE_OFF; // 默认闪光灯关闭
+    // 对焦模式
+    private String currentFocusMode;
 
     // 当前视频的地址
     private String fileVideo;
@@ -104,49 +107,43 @@ class Capture {
      * @param x
      * @param y
      */
-    public void focus(double x, double y) {
+    public void focus(float x, float y) {
         if (!isPreviewing) {
             return;
         }
-
-
-        int focusRadius = (int) (16 * 1000.0f);
-        int left = (int) (x * 2000.0f - 1000.0f) - focusRadius;
-        int top = (int) (y * 2000.0f - 1000.0f) - focusRadius;
-        Rect focusArea = new Rect();
-        focusArea.left = Math.max(left, -1000);
-        focusArea.top = Math.max(top, -1000);
-        focusArea.right = Math.min(left + focusRadius, 1000);
-        focusArea.bottom = Math.min(top + focusRadius, 1000);
-        Camera.Area cameraArea = new Camera.Area(focusArea, 800);
-
-        Camera.Parameters parameters = camera.getParameters();
-
-        List<Camera.Area> areas = new ArrayList<>();
-        List<Camera.Area> areasMetrix = new ArrayList<>();
-        if (parameters.getMaxNumMeteringAreas() > 0) {
-            areas.add(cameraArea);
-            areasMetrix.add(cameraArea);
+        Rect focusRect = calculateTapArea(x, y);
+        //一定要首先取消，否则无法再次开启
+        camera.cancelAutoFocus();
+        Camera.Parameters params = camera.getParameters();
+        if (params.getMaxNumFocusAreas() > 0) {
+            List<Camera.Area> focusAreas = new ArrayList<>();
+            focusAreas.add(new Camera.Area(focusRect, 800));
+            params.setFocusAreas(focusAreas);
+        } else {
+            //focus areas not supported
         }
-
-        if (areas.isEmpty() || areasMetrix.isEmpty()) {
-            return;
-        }
-        parameters.setMeteringAreas(areasMetrix);
-        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-        parameters.setFocusAreas(areas);
+        //首先保存原来的对焦模式，然后设置为macro，对焦回调后设置为保存的对焦模式
+        final String currentFocusMode = params.getFocusMode();
+        List<String> supportedFocusModes = params.getSupportedFocusModes();
+        params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         try {
-            camera.cancelAutoFocus();
-            camera.setParameters(parameters);
-            camera.autoFocus(new Camera.AutoFocusCallback() {
-                @Override
-                public void onAutoFocus(boolean success, Camera camera) {
-                    Util.log("focus success");
-                }
-            });
+            camera.setParameters(params);
         } catch (Exception e) {
             Util.e(e);
         }
+        camera.autoFocus(new Camera.AutoFocusCallback() {
+            @Override
+            public void onAutoFocus(boolean success, Camera camera) {
+                //回调后 还原模式
+                Camera.Parameters params = camera.getParameters();
+                params.setFocusMode(currentFocusMode);
+                camera.setParameters(params);
+                if (success) {
+                    Util.log("对焦区域对焦成功");
+                }
+            }
+        });
+
     }
 
 
@@ -432,13 +429,44 @@ class Capture {
             return;
         }
         List<String> supportedFocus = parameters.getSupportedFocusModes();
-        boolean isHave = supportedFocus == null ? false :
-                supportedFocus.indexOf(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO) >= 0;
-        if (isHave) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+        if (supportedFocus != null && supportedFocus.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         }
         parameters.setFlashMode(currentFlashMode);
         camera.setParameters(parameters);
+    }
+
+
+    /**
+     * Convert touch position x:y to {@link Camera.Area} position -1000:-1000 to 1000:1000.
+     */
+    private Rect calculateTapArea(float x, float y) {
+        float focusAreaSize = 300;
+        int areaSize = Float.valueOf(focusAreaSize * 1.0f).intValue();
+        int centerY = 0;
+        int centerX = 0;
+        centerY = (int) (x / surfaceView.getMeasuredWidth() * 2000 - 1000);
+        centerX = (int) (y / surfaceView.getMeasuredHeight() * 2000 - 1000);
+        int left = clamp(centerX - areaSize / 2, -1000, 1000);
+        int top = clamp(centerY - areaSize / 2, -1000, 1000);
+        RectF rectF = new RectF(left, top, left + areaSize, top + areaSize);
+        return new Rect(Math.round(rectF.left), Math.round(rectF.top), Math.round(rectF.right), Math.round(rectF.bottom));
+    }
+
+    /**
+     * @param x
+     * @param min
+     * @param max
+     * @return
+     */
+    private int clamp(int x, int min, int max) {
+        if (x > max) {
+            return max;
+        }
+        if (x < min) {
+            return min;
+        }
+        return x;
     }
 
 
