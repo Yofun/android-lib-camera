@@ -3,12 +3,10 @@ package com.hyfun.camera.p2v;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.CamcorderProfile;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -93,11 +91,10 @@ class Util {
      */
     public static final void notifyAlbumDataChanged(Context context, File file) {
         //通知相册更新
-        MediaStore.Images.Media.insertImage(context.getApplicationContext().getContentResolver(), BitmapFactory.decodeFile(file.getAbsolutePath()), file.getName(), null);
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         Uri uri = Uri.fromFile(file);
-        intent.setData(uri);
-        context.getApplicationContext().sendBroadcast(intent);
+        // 通知图库更新
+        Intent scannerIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+        context.sendBroadcast(scannerIntent);
     }
 
 
@@ -162,10 +159,9 @@ class Util {
         scale.setDuration(400);
         set.addAnimation(scale);
 
-        AlphaAnimation alpha = new AlphaAnimation(0f,1.0f);
+        AlphaAnimation alpha = new AlphaAnimation(0f, 1.0f);
         alpha.setDuration(400);
         set.addAnimation(alpha);
-
 
 
         view.startAnimation(set);
