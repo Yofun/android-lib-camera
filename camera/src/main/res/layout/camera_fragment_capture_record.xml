@@ -13,9 +13,9 @@
         android:id="@+id/camera_capture_record_focus_view"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:tint="#09BE5D"
-        android:visibility="gone"
-        android:src="@drawable/camera_ic_capture_focus_24dp"/>
+        android:src="@mipmap/fun_camera_img_capture_focus"
+        android:tint="#09bb07"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,8 +37,8 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:tint="#ffffff"
-                android:src="@drawable/camera_ic_capture_flash_off_24dp" />
+                android:src="@drawable/camera_ic_capture_flash_off_24dp"
+                android:tint="#ffffff" />
 
             <View
                 android:layout_width="0dp"
@@ -50,52 +50,68 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="5dp"
-                android:tint="#ffffff"
-                android:src="@drawable/camera_ic_capture_switch_24dp" />
+                android:src="@drawable/camera_ic_capture_switch_24dp"
+                android:tint="#ffffff" />
         </LinearLayout>
     </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/camera_capture_record_tv_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textColor="#ffffff"/>
 
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-            <ImageView
-                android:id="@+id/camera_capture_record_btn_back"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:src="@drawable/camera_ic_keyboard_arrow_down_black_24dp" />
-        </FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
 
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-            <com.hyfun.camera.widget.CaptureButton
-                android:id="@+id/camera_capture_record_capture_button"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                app:progressColor="#09BE5D"
-                app:maxSeconds="10"
-                android:layout_gravity="center"/>
-        </FrameLayout>
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+                <ImageView
+                    android:id="@+id/camera_capture_record_btn_back"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/camera_ic_keyboard_arrow_down_black_24dp" />
+            </FrameLayout>
 
-        </FrameLayout>
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
+                <com.hyfun.camera.widget.CaptureButton
+                    android:id="@+id/camera_capture_record_capture_button"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    app:maxSeconds="10"
+                    app:progressColor="#09BE5D" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+            </FrameLayout>
+
+        </LinearLayout>
     </LinearLayout>
 </FrameLayout>

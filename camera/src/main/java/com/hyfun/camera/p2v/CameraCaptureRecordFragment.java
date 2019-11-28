@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hyfun.camera.R;
@@ -37,6 +38,7 @@ public class CameraCaptureRecordFragment extends BaseFragment implements OnCamer
     private View viewBack;
     private CaptureButton captureButton;
     private ImageView viewSplashMode, viewSwitch, viewFocusView;
+    private TextView viewTextInfo;
 
 
     public CameraCaptureRecordFragment(int mode, long duration) {
@@ -62,22 +64,29 @@ public class CameraCaptureRecordFragment extends BaseFragment implements OnCamer
         viewSplashMode = view.findViewById(R.id.camera_capture_record_iv_splash);
         viewSwitch = view.findViewById(R.id.camera_capture_record_iv_switch);
         viewFocusView = view.findViewById(R.id.camera_capture_record_focus_view);
+        viewTextInfo = view.findViewById(R.id.camera_capture_record_tv_info);
 
         // 初始化
         final Capture capture = new Capture(surfaceView);
         capture.setOnCameraCaptureListener(this);
 
+        captureButton.setMode(mode);
+        captureButton.setDuration(duration);
+        if (mode == CaptureButton.Mode.MODE_CAPTURE){
+            viewTextInfo.setText("轻触拍照");
+        }else if (mode == CaptureButton.Mode.MODE_RECORD){
+            viewTextInfo.setText("长按摄像");
+        }else if (mode == CaptureButton.Mode.MODE_CAPTURE_RECORD){
+            viewTextInfo.setText("轻触拍照 长按摄像");
+        }
+        // ——————————————————————————————————————点击事件——————————————————————————————————————————
+        // 返回
         viewBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        captureButton.setMode(mode);
-        captureButton.setDuration(duration);
-
-        // ——————————————————————————————————————点击事件——————————————————————————————————————————
-
         // 切换闪光灯
         viewSplashMode.setOnClickListener(new View.OnClickListener() {
             @Override

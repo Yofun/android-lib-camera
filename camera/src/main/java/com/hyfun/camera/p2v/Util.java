@@ -13,7 +13,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
 
 import java.io.File;
@@ -153,11 +155,21 @@ class Util {
         view.clearAnimation();
         view.setVisibility(View.VISIBLE);
 
-        ScaleAnimation animation = new ScaleAnimation(2.0f, 1.0f, 2.0f, 1, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        animation.setDuration(400);
+        AnimationSet set = new AnimationSet(false);
 
-        view.startAnimation(animation);
-        animation.setAnimationListener(new Animation.AnimationListener() {
+
+        ScaleAnimation scale = new ScaleAnimation(1.6f, 1.0f, 1.6f, 1, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        scale.setDuration(400);
+        set.addAnimation(scale);
+
+        AlphaAnimation alpha = new AlphaAnimation(0f,1.0f);
+        alpha.setDuration(400);
+        set.addAnimation(alpha);
+
+
+
+        view.startAnimation(set);
+        set.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
 
