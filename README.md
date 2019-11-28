@@ -17,3 +17,122 @@
 
 
 
+| 作者 | 联系方式 |
+| -- | -- |
+| HyFun | QQ：775183940 |
+
+[demo.apk下载地址](app/debug/app-debug.apk)
+
+## 一、依赖
+
+**Project build.gradle中**
+
+```
+allprojects {
+    repositories {
+        jcenter()
+        maven {
+            url "https://jitpack.io"
+        }
+    }
+}
+```
+
+Module build.gradle中
+
+```
+dependencies {
+    implementation 'com.github.HyFun:Android-Library-Camera:{last-version}'
+ }
+```
+
+
+## 二、注意事项
+
+**Android 6.0 运行时权限处理**
+
+```xml
+<uses-permission android:name="android.permission.CAMERA"/>
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+<uses-permission android:name="android.permission.RECORD_AUDIO"/>
+```
+
+## 三、使用方法
+
+### 启动
+
+- 拍照
+    ```java
+    new RxPermissions(this)
+            .request(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            .subscribe(new Consumer<Boolean>() {
+                @Override
+                public void accept(Boolean aBoolean) throws Exception {
+                    if (aBoolean) {
+                        FunCamera.capturePhoto(MainActivity.this, 10);
+                    } else {
+                        Toast.makeText(MainActivity.this, "授权失败", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+    ```
+
+
+- 录像
+    ```java
+    new RxPermissions(this)
+            .request(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.RECORD_AUDIO
+            )
+            .subscribe(new Consumer<Boolean>() {
+                @Override
+                public void accept(Boolean aBoolean) throws Exception {
+                    if (aBoolean) {
+                        FunCamera.captureRecord(MainActivity.this, 20, 10000);
+                    } else {
+                        Toast.makeText(MainActivity.this, "授权失败", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+    ```
+
+- 拍照+录像
+
+    ```java
+    new RxPermissions(this)
+            .request(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.RECORD_AUDIO
+            )
+            .subscribe(new Consumer<Boolean>() {
+                @Override
+                public void accept(Boolean aBoolean) throws Exception {
+                    if (aBoolean) {
+                        FunCamera.capturePhoto2Record(MainActivity.this, 30, 10000);
+                    } else {
+                        Toast.makeText(MainActivity.this, "授权失败", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+    ```
+
+### 回调
+
+```java
+@Override
+protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (resultCode == RESULT_OK) {
+        String path = data.getStringExtra(FunCamera.DATA);
+        String pathOrigin = data.getStringExtra(FunCamera.DATA_ORIGIN);
+        StringBuilder sb = new StringBuilder();
+        sb.append("压缩后地址：" + path + "\n");
+        sb.append("原图的地址：" + pathOrigin);
+        textView.setText(sb.toString());
+    }
+}
+```
