@@ -5,10 +5,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.media.MediaRecorder;
-import android.os.Build;
 import android.os.Environment;
 import android.view.SurfaceHolder;
 
@@ -98,10 +96,6 @@ class Capture {
         isPreviewing = true;
         surfaceView.setVideoDimension(previewInfo.getPreviewHeight(), previewInfo.getPreviewWidth());
         surfaceView.requestLayout();
-        // 回调
-        if (onCameraCaptureListener != null) {
-            onCameraCaptureListener.onCameraSwitch(cameraId);
-        }
     }
 
     /**
@@ -153,18 +147,13 @@ class Capture {
 
     /**
      * 切换闪光灯状态
+     * <p>
+     * 切换闪光灯的时候检查闪光灯是否可用
      */
     public void enableFlashLight() {
         if (!isPreviewing) {
             if (onCameraCaptureListener != null) {
                 onCameraCaptureListener.onError(new Exception("预览的时候才能操作闪光灯"));
-            }
-            return;
-        }
-        // 先判断是否是后置摄像头
-        if (cameraId != Camera.CameraInfo.CAMERA_FACING_BACK) {
-            if (onCameraCaptureListener != null) {
-                onCameraCaptureListener.onError(new Exception("只有后置摄像头才能开启闪光灯"));
             }
             return;
         }
@@ -426,17 +415,35 @@ class Capture {
      */
     private void setCameraParameter() {
         Camera.Parameters parameters = camera.getParameters();
+        // 设置预览的尺寸
         parameters.setPreviewSize(previewInfo.getPreviewWidth(), previewInfo.getPreviewHeight());
         parameters.setPictureSize(previewInfo.getPictureWidth(), previewInfo.getPictureHeight());
         parameters.setJpegQuality(100);
-        if (Build.VERSION.SDK_INT < 9) {
-            return;
-        }
+        // 获取支持的对焦模式
         List<String> supportedFocus = parameters.getSupportedFocusModes();
         if (supportedFocus != null && supportedFocus.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         }
-        parameters.setFlashMode(currentFlashMode);
+
+        // 设置闪光灯模式之前检查该模式是否可用
+        List<String> flashModes = parameters.getSupportedFlashModes();
+        if (flashModes == null) {
+            flashModes = new ArrayList<>();
+        }
+        if (flashModes.contains(Camera.Parameters.FLASH_MODE_TORCH)) {
+            // 设置闪光灯模式
+            parameters.setFlashMode(currentFlashMode);
+            if (onCameraCaptureListener != null) {
+                onCameraCaptureListener.onToggleSplash(currentFlashMode);
+            }
+        } else {
+            // 该设备不支持闪光灯
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+            if (onCameraCaptureListener != null) {
+                onCameraCaptureListener.onToggleSplash(null);
+            }
+        }
+
         camera.setParameters(parameters);
     }
 

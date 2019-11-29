@@ -6,7 +6,6 @@ package com.hyfun.camera.p2v;
  * Description:
  */
 interface OnCameraCaptureListener {
-    void onCameraSwitch(int mode);
 
     void onToggleSplash(String flashMode);
 

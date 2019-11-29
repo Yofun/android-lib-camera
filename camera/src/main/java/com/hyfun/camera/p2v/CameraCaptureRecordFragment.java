@@ -72,11 +72,11 @@ public class CameraCaptureRecordFragment extends BaseFragment implements OnCamer
 
         captureButton.setMode(mode);
         captureButton.setDuration(duration);
-        if (mode == CaptureButton.Mode.MODE_CAPTURE){
+        if (mode == CaptureButton.Mode.MODE_CAPTURE) {
             viewTextInfo.setText("轻触拍照");
-        }else if (mode == CaptureButton.Mode.MODE_RECORD){
+        } else if (mode == CaptureButton.Mode.MODE_RECORD) {
             viewTextInfo.setText("长按摄像");
-        }else if (mode == CaptureButton.Mode.MODE_CAPTURE_RECORD){
+        } else if (mode == CaptureButton.Mode.MODE_CAPTURE_RECORD) {
             viewTextInfo.setText("轻触拍照 长按摄像");
         }
         // ——————————————————————————————————————点击事件——————————————————————————————————————————
@@ -158,16 +158,13 @@ public class CameraCaptureRecordFragment extends BaseFragment implements OnCamer
     // —————————————————————————————————VIEW———————————————————————————————————————
 
     @Override
-    public void onCameraSwitch(int mode) {
-        if (mode == Camera.CameraInfo.CAMERA_FACING_BACK) {
-            viewSplashMode.setVisibility(View.VISIBLE);
-        } else if (mode == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            viewSplashMode.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
     public void onToggleSplash(String flashMode) {
+        if (flashMode == null) {
+            // 说明不支持闪光灯
+            viewSplashMode.setVisibility(View.GONE);
+            return;
+        }
+        viewSplashMode.setVisibility(View.VISIBLE);
         if (flashMode.equals(Camera.Parameters.FLASH_MODE_OFF)) {
             viewSplashMode.setImageResource(R.drawable.camera_ic_capture_flash_off_24dp);
         }
