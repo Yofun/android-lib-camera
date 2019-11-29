@@ -136,3 +136,9 @@ protected void onActivityResult(int requestCode, int resultCode, @Nullable Inten
     }
 }
 ```
+
+
+## 四、TODO
+
+- 拍完照后跳转到预览的时候会闪一下黑屏（看着难受，微信都不带动的~）
+
