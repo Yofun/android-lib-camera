@@ -9,9 +9,9 @@
 
     <!-- 默认Activity跳转动画 -->
     <style name="FunCameraAnimationStyle" mce_bogus="1" parent="@android:style/Animation.Activity">
-        <item name="android:activityOpenEnterAnimation">@anim/activity_up_in</item>
-        <item name="android:activityOpenExitAnimation">@anim/activity_up_out</item>
-        <item name="android:activityCloseEnterAnimation">@anim/activity_down_in</item>
-        <item name="android:activityCloseExitAnimation">@anim/activity_down_out</item>
+        <item name="android:activityOpenEnterAnimation">@anim/fun_camera_activity_up_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/fun_camera_activity_up_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/fun_camera_activity_down_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/fun_camera_activity_down_out</item>
     </style>
 </resources>
