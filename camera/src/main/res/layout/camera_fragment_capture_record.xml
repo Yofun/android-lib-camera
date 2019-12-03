@@ -6,6 +6,7 @@
 
     <com.hyfun.camera.widget.FunSurfaceView
         android:id="@+id/camera_capture_record_surface_view"
+        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -94,6 +94,7 @@ class Capture {
         }
         camera.startPreview();
         isPreviewing = true;
+        surfaceView.setUserSize(true);
         surfaceView.setVideoDimension(previewInfo.getPreviewHeight(), previewInfo.getPreviewWidth());
         surfaceView.requestLayout();
     }
