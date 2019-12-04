@@ -5,12 +5,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.MediaRecorder;
 import android.os.Environment;
 import android.view.SurfaceHolder;
+import android.view.TextureView;
 
-import com.hyfun.camera.widget.FunSurfaceView;
+import com.hyfun.camera.widget.AutoFitTextureView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,9 +26,9 @@ import java.util.List;
  * Description: 拍摄照片  录制视频的
  */
 class Capture {
-    private FunSurfaceView surfaceView;
+    private AutoFitTextureView surfaceView;
 
-    public Capture(FunSurfaceView surfaceView) {
+    public Capture(AutoFitTextureView surfaceView) {
         this.surfaceView = surfaceView;
 
         // 初始化
@@ -36,8 +38,7 @@ class Capture {
             cameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;   // 前置摄像头
         }
         //  surfaceview不维护自己的缓冲区，等待屏幕渲染引擎将内容推送到用户面前
-        surfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        surfaceView.getHolder().addCallback(surfaceCallBack);
+        surfaceView.setSurfaceTextureListener(textureListener);
     }
 
     private OnCameraCaptureListener onCameraCaptureListener;
@@ -86,17 +87,20 @@ class Capture {
         previewInfo.notifyDataChanged();
         setCameraParameter();
         camera.setDisplayOrientation(90);
+        // 重新设置surfaceview的宽高
+        surfaceView.setAspectRatio(previewInfo.getPreviewHeight(), previewInfo.getPreviewWidth());
+//         surfaceView.setAspectRatio(1080, 1920);
+
+
         try {
-            camera.setPreviewDisplay(surfaceView.getHolder());
+            camera.setPreviewTexture(surfaceView.getSurfaceTexture());
         } catch (IOException e) {
             destroy();
             return;
         }
         camera.startPreview();
         isPreviewing = true;
-        surfaceView.setUserSize(true);
-        surfaceView.setVideoDimension(previewInfo.getPreviewHeight(), previewInfo.getPreviewWidth());
-        surfaceView.requestLayout();
+
     }
 
     /**
@@ -324,7 +328,7 @@ class Capture {
         // 设置最大录制时间
         mediaRecorder.setMaxFileSize(30 * 1024 * 1024);
         mediaRecorder.setMaxDuration(10 * 60 * 60 * 1000);
-        mediaRecorder.setPreviewDisplay(surfaceView.getHolder().getSurface());
+        // mediaRecorder.setPreviewDisplay(surfaceView.getSurfaceTexture().);
         mediaRecorder.setOutputFile(fileVideo);
 
         // 一切就绪
@@ -505,6 +509,36 @@ class Capture {
         public void surfaceDestroyed(SurfaceHolder holder) {
             Util.log("surfaceCallBack>>>>>>surfaceDestroyed");
             destroy();
+        }
+    };
+
+
+    private TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
+        @Override
+        public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+            Util.log("textureListener>>>>>>onSurfaceTextureAvailable");
+            if (surface == null) {
+                return;
+            }
+            // 开始预览
+            startPreview();
+        }
+
+        @Override
+        public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+            Util.log("textureListener>>>>>>onSurfaceTextureSizeChanged");
+        }
+
+        @Override
+        public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+            Util.log("textureListener>>>>>>onSurfaceTextureDestroyed");
+            destroy();
+            return false;
+        }
+
+        @Override
+        public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
         }
     };
 }

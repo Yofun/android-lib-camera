@@ -15,8 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hyfun.camera.R;
+import com.hyfun.camera.widget.AutoFitTextureView;
 import com.hyfun.camera.widget.CaptureButton;
-import com.hyfun.camera.widget.FunSurfaceView;
 
 /**
  * Created by HyFun on 2019/10/14.
@@ -34,7 +34,7 @@ public class CameraCaptureRecordFragment extends BaseFragment implements OnCamer
 
 
     //视图
-    private FunSurfaceView surfaceView;
+    private AutoFitTextureView surfaceView;
     private View viewBack;
     private CaptureButton captureButton;
     private ImageView viewSplashMode, viewSwitch, viewFocusView;
@@ -135,8 +135,8 @@ public class CameraCaptureRecordFragment extends BaseFragment implements OnCamer
                 int action = event.getAction();
                 switch (action) {
                     case MotionEvent.ACTION_DOWN:
-                        float X = event.getX();
-                        float Y = event.getY();
+                        float X = event.getRawX();
+                        float Y = event.getRawY();
                         Util.log("click    X：" + X + "    Y：" + Y);
                         capture.focus(X, Y);
                         break;
