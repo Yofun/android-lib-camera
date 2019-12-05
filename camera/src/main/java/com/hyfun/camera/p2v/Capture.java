@@ -89,8 +89,6 @@ class Capture {
         camera.setDisplayOrientation(90);
         // 重新设置surfaceview的宽高
         surfaceView.setAspectRatio(previewInfo.getPreviewHeight(), previewInfo.getPreviewWidth());
-//         surfaceView.setAspectRatio(1080, 1920);
-
 
         try {
             camera.setPreviewTexture(surfaceView.getSurfaceTexture());
