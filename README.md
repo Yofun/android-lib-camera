@@ -1,5 +1,7 @@
 # Android-Library-Camera
 
+![](/screenshot/demo.gif)
+
 使用自定义相机进行拍照、录像的library。
 
 **说明**
