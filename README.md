@@ -1,8 +1,8 @@
 # Android-Library-Camera
 
-![](/screenshot/demo.gif)
-
 使用自定义相机进行拍照、录像的library。
+
+![](/screenshot/demo.gif)
 
 **说明**
 
@@ -17,11 +17,6 @@
 
 - 图片压缩：library中引用鲁班压缩，拍摄的原图存储在`内部存储/DCIM/Camera/`下，并会刷新图库。压缩图片会存储在`内部存储/Android/data/应用包名/DCIM`下面，不会刷新图库。
 
-
-
-| 作者 | 联系方式 |
-| -- | -- |
-| HyFun | QQ：775183940 |
 
 [demo.apk下载地址](app/debug/app-debug.apk)
 
