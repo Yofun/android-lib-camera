@@ -116,5 +116,12 @@
             </FrameLayout>
 
         </LinearLayout>
+
+        <!--底部导航栏区域-->
+        <View
+            android:id="@+id/camera_capture_record_view_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
+
     </LinearLayout>
 </FrameLayout>

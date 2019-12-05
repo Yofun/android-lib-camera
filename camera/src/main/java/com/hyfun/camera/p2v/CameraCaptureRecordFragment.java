@@ -39,6 +39,7 @@ public class CameraCaptureRecordFragment extends BaseFragment implements OnCamer
     private CaptureButton captureButton;
     private ImageView viewSplashMode, viewSwitch, viewFocusView;
     private TextView viewTextInfo;
+    private View viewNavigation;
 
 
     public CameraCaptureRecordFragment(int mode, long duration) {
@@ -65,8 +66,9 @@ public class CameraCaptureRecordFragment extends BaseFragment implements OnCamer
         viewSwitch = view.findViewById(R.id.camera_capture_record_iv_switch);
         viewFocusView = view.findViewById(R.id.camera_capture_record_focus_view);
         viewTextInfo = view.findViewById(R.id.camera_capture_record_tv_info);
+        viewNavigation = view.findViewById(R.id.camera_capture_record_view_navigation);
 
-        // 初始化
+        // ——————————————————————————————————————初始化——————————————————————————————————————————
         final Capture capture = new Capture(surfaceView);
         capture.setOnCameraCaptureListener(this);
 
@@ -146,6 +148,18 @@ public class CameraCaptureRecordFragment extends BaseFragment implements OnCamer
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Util.setFullScreen(getActivity());
+        // 导航栏区域
+        if (Util.isNavigationBarShow(getActivity())) {
+            ViewGroup.LayoutParams layoutParams = viewNavigation.getLayoutParams();
+            layoutParams.height = Util.getNavigationBarHeight(getActivity());
+            viewNavigation.setLayoutParams(layoutParams);
+        }
     }
 
     @Override

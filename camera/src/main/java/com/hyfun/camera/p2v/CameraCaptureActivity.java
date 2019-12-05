@@ -26,7 +26,6 @@ public class CameraCaptureActivity extends AppCompatActivity implements CameraCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Util.setFullScreen(this);
         setContentView(R.layout.activity_camera_capture);
         /**
          * 传过来的配置

@@ -3,12 +3,18 @@ package com.hyfun.camera.p2v;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.media.CamcorderProfile;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
+import android.view.Display;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -59,7 +65,7 @@ class Util {
             int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
             uiFlags |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
             //Activity全屏显示，但导航栏不会被隐藏覆盖，导航栏依然可见，Activity底部布局部分会被导航栏遮住。
-            uiFlags |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+            uiFlags |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
 
             // 隐藏状态栏
             uiFlags |= View.INVISIBLE;
@@ -70,7 +76,7 @@ class Util {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.TRANSPARENT);
-            window.setNavigationBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.parseColor("#60000000"));
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             // 设置透明状态栏,这样才能让 ContentView 向上
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -144,6 +150,54 @@ class Util {
     public static int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
+    }
+
+
+    /**
+     * 判断导航栏是否显示
+     *
+     * @return
+     */
+    public static boolean isNavigationBarShow(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            Point realSize = new Point();
+            display.getSize(size);
+            display.getRealSize(realSize);
+            return realSize.y != size.y;
+        } else {
+            boolean menu = ViewConfiguration.get(activity).hasPermanentMenuKey();
+            boolean back = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+            if (menu || back) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    /**
+     * 获取导航栏高度
+     *
+     * @param activity
+     * @return
+     */
+    public static int getNavigationBarHeight(Activity activity) {
+        if (!isNavigationBarShow(activity)) {
+            return 0;
+        }
+        Resources resources = activity.getResources();
+        int resourceId = resources.getIdentifier("navigation_bar_height",
+                "dimen", "android");
+        //获取NavigationBar的高度
+        int height = resources.getDimensionPixelSize(resourceId);
+        return height;
+    }
+
+
+    public static int getSceenHeight(Activity activity) {
+        return activity.getWindowManager().getDefaultDisplay().getHeight() + getNavigationBarHeight(activity);
     }
 
 

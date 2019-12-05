@@ -102,6 +102,13 @@ public class CameraCapturePreviewFragment extends BaseFragment {
         return view;
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Util.setFullScreen(getActivity());
+    }
+
     @Override
     public void finish() {
         // 删除原来的
