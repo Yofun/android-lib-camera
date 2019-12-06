@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="fun_camera_primary_color">#09BE5D</color>
+
+
+
+
     <color name="fun_dialog_background">#ffffff</color>
     <color name="fun_dialog_sub_text_color">#737373</color>
 </resources>

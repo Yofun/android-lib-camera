@@ -101,24 +101,23 @@ public class CaptureButton extends View {
         outRoundPaint.setAntiAlias(true);
         outRoundPaint.setColor(outCircleColor);
         if (isLongClick) {
-            setMinimumWidth((int) (width * 1.2));
-            canvas.scale(1.2f, 1.2f, width / 2, width / 2);
-
+            outRaduis = (float) (Math.min(width, height) / 2.0f);
         } else {
-            setMinimumWidth((int) width);
         }
         canvas.drawCircle(width / 2, height / 2, outRaduis, outRoundPaint);
         //画内圆
         innerRoundPaint.setAntiAlias(true);
         innerRoundPaint.setColor(innerCircleColor);
         if (isLongClick) {
+            // 内圆缩小为原来的一半
             canvas.drawCircle(width / 2, height / 2, innerRaduis / 2.0f, innerRoundPaint);
             //画外原环
             mCPaint.setAntiAlias(true);
             mCPaint.setColor(progressColor);
             mCPaint.setStyle(Paint.Style.STROKE);
-            mCPaint.setStrokeWidth(10);
-            RectF rectF = new RectF(0 + circleWidth, 0 + circleWidth, width - circleWidth, height - circleWidth);
+            int ringWidth = 12;
+            mCPaint.setStrokeWidth(ringWidth);
+            RectF rectF = new RectF(ringWidth / 2.0f, ringWidth / 2.0f, width - ringWidth / 2.0f, height - ringWidth / 2.0f);
             canvas.drawArc(rectF, startAngle, 360 * (1.0f * progress / mLoadingTime), false, mCPaint);
         } else {
             canvas.drawCircle(width / 2, height / 2, innerRaduis, innerRoundPaint);
