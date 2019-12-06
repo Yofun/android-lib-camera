@@ -2,9 +2,10 @@ package com.hyfun.camera;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.app.AppCompatActivity;
 
+import com.hyfun.camera.audio.FunAudioDialogFragment;
+import com.hyfun.camera.audio.FunAudioRecordListener;
 import com.hyfun.camera.p2v.CameraCaptureActivity;
 import com.hyfun.camera.widget.CaptureButton;
 
@@ -28,7 +29,7 @@ public class FunCamera {
      */
     public static final void capturePhoto(Activity activity, int requestCode) {
         Intent intent = capturePhoto2Record(activity, requestCode, CaptureButton.Mode.MODE_CAPTURE, 15000);
-        activity.startActivityForResult(intent,requestCode);
+        activity.startActivityForResult(intent, requestCode);
     }
 
     /**
@@ -40,7 +41,7 @@ public class FunCamera {
      */
     public static final void captureRecord(Activity activity, int requestCode, long duration) {
         Intent intent = capturePhoto2Record(activity, requestCode, CaptureButton.Mode.MODE_RECORD, duration);
-        activity.startActivityForResult(intent,requestCode);
+        activity.startActivityForResult(intent, requestCode);
     }
 
     /**
@@ -52,12 +53,25 @@ public class FunCamera {
      */
     public static final void capturePhoto2Record(Activity activity, int requestCode, long duration) {
         Intent intent = capturePhoto2Record(activity, requestCode, CaptureButton.Mode.MODE_CAPTURE_RECORD, duration);
-        activity.startActivityForResult(intent,requestCode);
+        activity.startActivityForResult(intent, requestCode);
     }
 
 
+    /**
+     * 录音
+     *
+     * @param activity
+     * @param funAudioRecordListener
+     */
+    public static final void captureAudioRecord(AppCompatActivity activity, FunAudioRecordListener funAudioRecordListener) {
+        FunAudioDialogFragment funAudioDialogFragment = FunAudioDialogFragment.newInstance();
+        funAudioDialogFragment.setAudioRecordListener(funAudioRecordListener);
+        funAudioDialogFragment.show(activity.getSupportFragmentManager(), "FunAudioDialogFragment");
+    }
+
 
     // —————————————————————————————————————————————————————————————————————————————————————————————
+
     /**
      * @param activity
      * @param mode     模式

@@ -30,4 +30,6 @@ dependencies {
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
     // 图片压缩 鲁班压缩
     implementation 'top.zibin:Luban:1.1.8'
+    // 录音库：https://github.com/ideastudios/IdealRecorder
+    implementation'com.github.ideastudios:IdealRecorder:2.0.4'
 }

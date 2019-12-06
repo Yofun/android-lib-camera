@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hyfun.camera.FunCamera;
+import com.hyfun.camera.audio.FunAudioRecordListener;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import io.reactivex.functions.Consumer;
@@ -78,6 +79,25 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    public void captureAudio(View view) {
+        new RxPermissions(this)
+                .request(Manifest.permission.RECORD_AUDIO)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (aBoolean) {
+                            FunCamera.captureAudioRecord(MainActivity.this, new FunAudioRecordListener() {
+                                @Override
+                                public void onAudioRecordResult(String filePath) {
+                                    textView.setText("录音地址：" + filePath);
+                                }
+                            });
+                        } else {
+                            Toast.makeText(MainActivity.this, "授权失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

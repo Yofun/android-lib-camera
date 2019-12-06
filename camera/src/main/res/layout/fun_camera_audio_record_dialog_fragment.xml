@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/fun_dialog_background">
+
+    <!--录音界面-->
+    <FrameLayout
+        android:id="@+id/fun_camera_audio_record_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:paddingTop="10dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="10dp">
+
+                <TextView
+                    android:id="@+id/fun_camera_audio_record_tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="点击录音"
+                    android:textColor="@color/fun_dialog_sub_text_color"
+                    android:textSize="18sp" />
+
+                <com.hyfun.camera.widget.FunWaveView
+                    android:id="@+id/fun_camera_audio_record_wave_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone"
+                    app:baselineColor="#0000"
+                    app:space="10dp"
+                    app:waveColor="#e64340"
+                    app:waveStokeWidth="4dp" />
+
+                <ImageView
+                    android:id="@+id/fun_camera_audio_record_view_start"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/fun_camera_shape_background_circle"
+                    android:backgroundTint="#f0f0f0"
+                    android:padding="10dp"
+                    android:src="@drawable/fun_camera_shape_background_circle"
+                    android:tint="#e64340" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/fun_camera_audio_record_tv_negative"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:text="取消"
+                android:textColor="#01CAF5"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </FrameLayout>
+
+
+    <!--播放界面-->
+    <FrameLayout
+        android:id="@+id/fun_camera_audio_preview_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/fun_camera_audio_preview_tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="播放录音"
+                    android:textColor="@color/fun_dialog_sub_text_color"
+                    android:textSize="18sp" />
+
+                <SeekBar
+                    android:id="@+id/fun_camera_audio_preview_seekbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:indeterminateOnly="false"
+                    android:max="100"
+                    android:maxHeight="4dp"
+                    android:min="0"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/fun_camera_layer_audio_record_seekbar_style"
+                    android:thumb="@drawable/fun_camera_shape_audio_record_seekbar_bar" />
+
+                <ImageView
+                    android:id="@+id/fun_camera_audio_preview_iv_play"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/fun_camera_shape_background_circle_outline"
+                    android:padding="10dp"
+                    android:src="@drawable/func_camera_ic_audio_record_play_black_24dp"
+                    android:tint="#01CAF5" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/fun_camera_audio_preview_tv_negative"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="?selectableItemBackground"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="取消"
+                    android:textColor="#01CAF5"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/fun_camera_audio_preview_tv_positive"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="?selectableItemBackground"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="使用"
+                    android:textColor="#01CAF5"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+</FrameLayout>
+

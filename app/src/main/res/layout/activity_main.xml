@@ -27,6 +27,14 @@
         android:onClick="captureRecord"/>
 
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="录音"
+        android:onClick="captureAudio"/>
+
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
