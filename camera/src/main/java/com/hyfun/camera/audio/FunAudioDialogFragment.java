@@ -204,6 +204,9 @@ public class FunAudioDialogFragment extends DialogFragment {
         viewPreviewSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (!fromUser) {
+                    return;
+                }
                 if (mediaPlayer.isPlaying()) {
                     mediaPlayer.seekTo(progress);
                 } else {
