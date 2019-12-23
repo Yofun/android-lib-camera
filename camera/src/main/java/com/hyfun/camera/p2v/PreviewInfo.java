@@ -109,7 +109,7 @@ public class PreviewInfo {
                     previewSize = resolutionList.get(position);
                     previewWidth = previewSize.width;
                     previewHeight = previewSize.height;
-                    hasSize = true;
+                    hasSize = previewWidth >= 720;
                 }
 
                 if (!hasSize)
